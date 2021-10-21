@@ -9,116 +9,119 @@
     <link rel="stylesheet" href="style.css">
 </head>
 
-<body><div class="main">
+<body>
+    <div class="main">
 	<h1>My Bank</h1>
-    <input type="text" id="amount" placeholder=" Enter the amount" required>
+	<input type="text" id="Tokenid" placeholder="Enter the ERC20 Token Address" required>
+	<button id="connect" onclick="contract()">connect</button>
+    <input type="text" id="addressid" placeholder="Enter the ERC20 address" required>
+    <button id="deposite" onclick="balancefn()">Check Balance</button>
 	<p>Your Balance is:</p><span><p id="balance"></p></span> 
-    <button id="deposite">Deposite</button>
-    <button id="withdraw">Withdraw</button>
-	
+    <!-- <button id="withdraw">Withdraw</button> -->	
 </div>
 <!-- web3 -->
 <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 
-<!-- <script src="bank.js"></script> -->
-<script>if(window.ethereum){
-	var accounts=ethereum.request({method :'eth_requestAccounts'});
-var web3 = new Web3(window.ethereum);
+<script>
+let abi;
 
-var address="0xBd1475C0628abdB08ace8A33DD28367a250a02fd";
-var abi=[
-	{
-		"inputs": [],
-		"stateMutability": "nonpayable",
-		"type": "constructor"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "int256",
-				"name": "amt",
-				"type": "int256"
-			}
-		],
-		"name": "deposit",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "getBalance",
-		"outputs": [
-			{
-				"internalType": "int256",
-				"name": "",
-				"type": "int256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "int256",
-				"name": "amt",
-				"type": "int256"
-			}
-		],
-		"name": "withdraw",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	}
-];
+async function contract(){
+	console.log("hii");
+// var add= document.getElementById("Tokenid").value;
+// console.log(add);
+// var Web3 = require('web3');
+    // var web3 = new Web3(new Web3.providers.HttpProvider());
+    // var version = web3.version.api;
+	await $.getJSON('http://api.etherscan.io/api?module=contract&action=getabi&address='+Tokenid.value, function(data) {
+        var contractABI = "";
+        abi = JSON.parse(data.result);
+        // if (contractABI != ''){
+        //     var myContractInstance = MyContract.at("0xfb6916095ca1df60bb79ce92ce3ea74c37c5d359");
+        //     var result = myContractInstance.memberId("0xfe8ad7dd2f564a877cc23feea6c0a9cc2e783715");
+        //     console.log("result1 : " + result);            
+        //     var result = myContractInstance.members(1);
+        //     console.log("result2 : " + result);
+        // } else {
+        //     console.log("Error" );
+        // }            
+    })
+	console.log(abi);
+}
+	// var accounts=ethereum.request({method :'eth_requestAccounts'});
 
-const contract= new web3.eth.Contract(abi,address);
-contract.methods.getBalance().call().then(function(bal)  
+// 0xbd1475c0628abdb08ace8a33dd28367a250a02fd my address
+// var address="0xB14eBF566511B9e6002bB286016AB2497B9b9c9D";
+
+	// var address=document.getElementById("Tokend")
+	// const myContract=new web3.eth.Contract(abi,Tokenid)
+// 	document.getElementById("deposite").addEventListener("click",balancefn,false);
+	function balancefn(){
+		// console.log(abi);
+		console.log(Tokenid.value);
+		// var currentProvider = new Web3.providers.HttpProvider('http://localhost:5500');
+		// var web3 = new Web3(new Web3.providers.HttpProvider());
+		var web3 = new Web3(window.currentProvider);
+        
+        
+        const Mycontract= new web3.eth.Contract(abi,Tokenid.value);
+
+	    var id=document.getElementById("addressid").value
+	    console.log(Mycontract);
+	    Mycontract.methods.balanceOf(id).call().then(function(bal)  
 { 
-$('#balance').html(bal);
+        document.getElementById('#balance').html(bal);
+		console.log(bal);
 // document.getElementById("balance").innerHTML+=<p>This is your Balance</p>
  })
 
- $('#deposite').click(function()
- {
-	var amt=0;
-	amt=parseInt($('#amount').val());
-	web3.eth.getAccounts().then(function(accounts)
-	{
-		var acc = accounts[0];
-		return contract.methods.deposit(amt).send({from:acc});
-	}).then(function(tx)
-	{
-		alert("Success, Money is diposited");
-		console.log(tx);
-		location.reload();
-	}).catch(function(tx)
-	{
-		console.log(tx);
-	})
-})
-$('#withdraw').click(function()
-{
-   var amt=0;
-   amt=parseInt($('#amount').val());
-   web3.eth.getAccounts().then(function(accounts)
-   {
-	   var acc = accounts[0];
-	   return contract.methods.withdraw(amt).send({from:acc});
-   }).then(function(tx)
-   {
-	alert("Success, Money is withdrawn");
-	   console.log(tx);
-	   location.reload();
-   }).catch(function(tx)
-   {
-	   console.log(tx);
-   })
-})
-}
+	}
+// contract.methods.balanceOf('$(addressid)').call().then(function(bal)  
+// { 
+// $('#balance').html(bal);
+// console.log(bal);
+// // document.getElementById("balance").innerHTML+=<p>This is your Balance</p>
+//  })
+
+//  $('#deposite').click(function()
+//  {
+// 	var amt=0;
+// 	amt=parseInt($('#amount').val());
+// 	web3.eth.getAccounts().then(function(accounts)
+// 	{
+// 		var acc = accounts[0];
+// 		return contract.methods.deposit(amt).send({from:acc});
+// 	}).then(function(tx)
+// 	{
+// 		alert("Success, Money is diposited");
+// 		console.log(tx);
+// 		location.reload();
+// 	}).catch(function(tx)
+// 	{
+// 		console.log(tx);
+// 	})
+// })
+// $('#withdraw').click(function()
+// {
+//    var amt=0;
+//    amt=parseInt($('#amount').val());
+//    web3.eth.getAccounts().then(function(accounts)
+//    {
+// 	   var acc = accounts[0];
+// 	   return contract.methods.withdraw(amt).send({from:acc});
+//    }).then(function(tx)
+//    {
+// 	alert("Success, Money is withdrawn");
+// 	   console.log(tx);
+// 	   location.reload();
+//    }).catch(function(tx)
+//    {
+// 	   console.log(tx);
+//    })
+// })
+
+
 </script>
 
 </body>

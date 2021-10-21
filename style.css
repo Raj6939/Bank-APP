@@ -25,17 +25,19 @@ body{
     flex-direction: column;
     background: teal;
   }
-  #amount{
-      width: auto;
+  #addressid,#Tokenid{
+      width: 400px;
       height: 30px;
       border-radius: 5px;
       margin-bottom: 5px;
+      margin-top: 20px;
   }
   #balance{
       color: white;
+      /* padding-top: 20px; */
 /* margin-top:10px; */
   }
-  #deposite  {
+  #deposite,#connect  {
     background-color: #4CAF50; /* Green */
     border: none;
     color: white;
@@ -47,6 +49,7 @@ body{
     border-radius: 5px;
     cursor: pointer;
     margin-top: 10px;
+    margin-bottom: 20px;
   }
   #withdraw  {
     background-color: red; /* Green */
